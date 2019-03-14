@@ -33,5 +33,26 @@ namespace DocumentApi
 
             return Task.FromResult(documents.AsEnumerable());
         }
+
+        public Task<DocumentDto> UploadDocument(DocumentDto document)
+        {
+            var connection = new SqlConnection("fake-connection-string");
+            var command = connection.CreateCommand();
+
+            var commandText = @"
+                INSERT INTO Documents (Name, Content)
+                VALUES (" + document.Name + "," + document.Content + @")
+            ";
+
+            command.CommandText = commandText;
+
+            var reader = command.ExecuteReaderAsync().Result;
+            while (reader.ReadAsync().Result)
+            {
+                document.Id = (string)reader[0];
+            }
+
+            return Task.FromResult(document);
+        }
     }
 }
