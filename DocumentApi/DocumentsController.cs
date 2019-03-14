@@ -28,7 +28,8 @@ namespace DocumentApi
 
                 if (!documentExists)
                 {
-                    // upload document
+                    var createdDocument = documentRepository.UploadDocument(document).Result;
+                    document.Id = createdDocument.Id;
                 }
             }
 
