@@ -8,11 +8,32 @@ namespace DocumentApi
     {
         [HttpGet]
         [Route("uploadDocuments")]
-        public Task<ActionResult<IEnumerable<DocumentDto>>> UploadDocuments()
+        public Task<ActionResult<IEnumerable<DocumentDto>>> UploadDocuments(IEnumerable<DocumentDto> documents)
         {
             var documentRepository = new DocumentRepository();
 
+            var currentDocuments = documentRepository.GetAllDocuments().Result;
+
+            foreach (var document in documents)
+            {
+                var documentExists = false;
+
+                foreach (var currentDocument in currentDocuments)
+                {
+                    if (currentDocument.Name == document.Name)
+                    {
+                        documentExists = true;
+                    }
+                }
+
+                if (!documentExists)
+                {
+                    // upload document
+                }
+            }
+
             HttpContext.Response.StatusCode = 200;
+            return Task.FromResult(new ActionResult<IEnumerable<DocumentDto>>(documents));
         }
     }
 }
